@@ -1,0 +1,12 @@
+[package]
+name = "sentry-tide"
+version = "0.1.0"
+authors = ["rusty <rusty@spoqa.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+async-trait = "0.1.48"
+sentry-core = { version = "0.22.0", default-features = false, features = ["client"] }
+tide = "0.16.0"
