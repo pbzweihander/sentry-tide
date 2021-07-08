@@ -1,6 +1,7 @@
 use std::borrow::Cow;
 use std::sync::Arc;
 
+use sentry_anyhow::AnyhowHubExt;
 use sentry_core::protocol::{ClientSdkPackage, Event, Request as SentryRequest};
 use sentry_core::{Hub, SentryFutureExt};
 use tide::Request;
@@ -75,14 +76,16 @@ where
         });
 
         let mut response = next.run(request).bind_hub(hub.clone()).await;
-        if let Some(error) = response.error() {
-            if self.capture_server_errors && response.status().is_server_error() {
-                let stderror: &dyn std::error::Error = error.as_ref();
-                let event_id = hub.capture_error(stderror);
+        if self.capture_server_errors && response.status().is_server_error() {
+            if let Some(error) = response.take_error() {
+                let status = error.status();
+                let anyhow_error = error.into_inner();
+                let event_id = hub.capture_anyhow(&anyhow_error);
 
                 if self.emit_header {
                     response.insert_header("x-sentry-event", event_id.to_simple_ref().to_string());
                 }
+                response.set_error(tide::Error::new(status, anyhow_error));
             }
         }
 

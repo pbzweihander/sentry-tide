@@ -6,5 +6,6 @@ edition = "2018"
 
 [dependencies]
 async-trait = "0.1"
+sentry-anyhow = "0.23.0"
 sentry-core = { version = "0.23", default-features = false, features = ["client"] }
 tide = { version = "0.16", default-features = false }
