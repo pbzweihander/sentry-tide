@@ -4,6 +4,9 @@ version = "0.1.0"
 authors = ["Kangwook Lee <pbzweihander@gmail.com>"]
 edition = "2018"
 
+[features]
+backtrace = ["sentry-anyhow/backtrace"]
+
 [dependencies]
 async-trait = "0.1"
 sentry-anyhow = "0.23.0"
